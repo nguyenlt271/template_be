@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
-import morgan from 'morgan';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
-import compression from 'compression';
+import * as morgan from 'morgan';
+import * as compression from 'compression';
 import * as dotenv from 'dotenv';
 import configs from './configs';
 
@@ -18,9 +18,12 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
 
+  // Global Configs
+  app.useGlobalPipes(new ValidationPipe());
+
   // Running app
   await app.listen(configs.app.port, () => {
-    Logger.log('Server is running at port: ', configs.app.port);
+    Logger.log(`Server is running at port: ${configs.app.port}`);
   });
 }
 bootstrap();
